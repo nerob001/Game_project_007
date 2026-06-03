@@ -24,7 +24,7 @@ It follows the same core mechanics:
 - Paddle collision control
 - Brick destruction system
 - Score tracking
-- 
+  
 ---
 
 ## 🧱 Screenshots
