@@ -24,8 +24,7 @@ It follows the same core mechanics:
 - Paddle collision control
 - Brick destruction system
 - Score tracking
-- Level progression
-
+- 
 ---
 
 ## 🧱 Screenshots
@@ -41,8 +40,7 @@ It follows the same core mechanics:
 - Real-time ball physics and collision detection
 - Brick layout system
 - Score system
-- Multiple levels (expandable)
-- Simple and lightweight 2D game logic
+- Simple 2D game logic
 
 ---
 
