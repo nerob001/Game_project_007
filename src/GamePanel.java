@@ -1,11 +1,12 @@
-import javax.swing.*;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Iterator;
+import javax.swing.*; 
+import java.awt.*; 
+import java.util.ArrayList; 
+import java.util.Iterator; 
 import java.util.List;
 
-public class GamePanel extends JPanel implements Runnable {
+public class GamePanel extends JPanel implements Runnable {// Jpanel class become drawable canva runnable allow run a game loop in a separate thread
 
+     // window size
     public static final int WIDTH  = 600;
     public static final int HEIGHT = 700;
     private static final int FPS   = 60;
@@ -20,27 +21,23 @@ public class GamePanel extends JPanel implements Runnable {
     private Ball   ball;
     private List<Brick> bricks = new ArrayList<>();
 
-    private final Sound sound1 = new Sound("res/hit.wav");
-    private final Sound sound2 = new Sound("res/gameover.wav");
-
     private int score = 0;
     private int lives = 3;
     private int nextSpeedUp = 50;
 
     public GamePanel() {
-        setPreferredSize(new Dimension(WIDTH, HEIGHT));
-//        setBackground(new Color(15, 15, 25));
-        setBackground(Color.BLACK);
-        setDoubleBuffered(true);
+        setPreferredSize(new Dimension(WIDTH, HEIGHT)); // tell JFRame how big the panel should be
+        setBackground(new Color(15, 15, 25));
+        setDoubleBuffered(true); 
         addKeyListener(keyHandler);
         setFocusable(true);
 
-        setupLevel();
+        setupLevel(); 
         startGameThread();
     }
 
     private void startGameThread() {
-        gameThread = new Thread(this);
+        gameThread = new Thread(this); 
         gameThread.start();
     }
 
@@ -57,8 +54,8 @@ public class GamePanel extends JPanel implements Runnable {
             lastTime = currentTime;
 
             if (delta >= 1) {
-                update();
-                repaint();
+                update(); 
+                repaint(); 
                 delta--;
             }
         }
@@ -74,7 +71,7 @@ public class GamePanel extends JPanel implements Runnable {
         int brickW    = 52;
         int brickH    = 22;
         int padding   = 4;
-        int offsetX   = 14;
+        int offsetX   = 14; // position brick start drawing
         int offsetY   = 80;
 
         for (int row = 0; row < rows; row++) {
@@ -82,7 +79,7 @@ public class GamePanel extends JPanel implements Runnable {
                 int bx     = offsetX + col * (brickW + padding);
                 int by     = offsetY + row * (brickH + padding);
                 int health = (row < 2) ? 2 : 1;
-                bricks.add(new Brick(bx, by, brickW, brickH, health));
+                bricks.add(new Brick(bx, by, brickW, brickH, health)); // brick added
             }
         }
 
@@ -92,13 +89,13 @@ public class GamePanel extends JPanel implements Runnable {
 
     private void resetBallAndPaddle() {
         paddle = new Paddle(WIDTH / 2 - 45, HEIGHT - 60, keyHandler);
-        ball   = new Ball(WIDTH / 2 - 7, HEIGHT - 80);
+        ball   = new Ball(WIDTH / 2 - 7, HEIGHT - 80); // place ball on paddle
         state  = GameState.WAITING;
     }
 
-    private void update() {
+    private void update() { // control game behaviour
         if (state == GameState.WAITING) {
-            ball.setX(paddle.getX() + paddle.getPaddleWidth() / 2 - ball.getSize() / 2);
+            ball.setX(paddle.getX() + paddle.getPaddleWidth() / 2 - ball.getSize() / 2);// ball stick to paddle
 
             if (keyHandler.spacePressed) {
                 ball.launch();
@@ -115,26 +112,24 @@ public class GamePanel extends JPanel implements Runnable {
 
         // collision: ball - paddle
         if (ball.getBounds().intersects(paddle.getBounds()) && ball.getY() + ball.getSize() < paddle.getY() + paddle.getHeight()) {
-            ball.deflectOffPaddle(paddle);
+            ball.deflectOffPaddle(paddle); // change ball direction based on hitting position
         }
 
         // collision: ball - bricks
         Iterator<Brick> it = bricks.iterator();
-        while (it.hasNext()) {
+        while (it.hasNext()) { // brick loop
             Brick brick = it.next();
             if (brick.isDestroyed()) { it.remove(); continue; }
-
             Rectangle bBounds = ball.getBounds();
             Rectangle brBounds = brick.getBounds();
 
             if (bBounds.intersects(brBounds)) {
                 score += brick.getPointValue();
                 brick.hit();
-                sound1.play();
 
-                //  difficulty
+                //  difficulty: speed up every 50 points
                 if (score >= nextSpeedUp) {
-                    ball.speedUp(0.4);
+                    ball.speedUp(0.4);  
                     nextSpeedUp += 50;
                 }
 
@@ -160,7 +155,6 @@ public class GamePanel extends JPanel implements Runnable {
             lives--;
             if (lives <= 0) {
                 state = GameState.GAME_OVER;
-                sound2.play();
             } else {
                 resetBallAndPaddle();
             }
@@ -173,8 +167,8 @@ public class GamePanel extends JPanel implements Runnable {
 
     @Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D) g;
+        super.paintComponent(g); 
+        Graphics2D g2 = (Graphics2D) g; 
 
         drawBackground(g2);
 
@@ -193,7 +187,7 @@ public class GamePanel extends JPanel implements Runnable {
             setupLevel();
         }
 
-        g2.dispose();
+        g2.dispose(); // free resources
     }
 
     private void drawBackground(Graphics2D g2) {
