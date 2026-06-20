@@ -20,13 +20,17 @@ public class GamePanel extends JPanel implements Runnable {
     private Ball   ball;
     private List<Brick> bricks = new ArrayList<>();
 
+    private final Sound sound1 = new Sound("res/hit.wav");
+    private final Sound sound2 = new Sound("res/gameover.wav");
+
     private int score = 0;
     private int lives = 3;
     private int nextSpeedUp = 50;
 
     public GamePanel() {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
-        setBackground(new Color(15, 15, 25));
+//        setBackground(new Color(15, 15, 25));
+        setBackground(Color.BLACK);
         setDoubleBuffered(true);
         addKeyListener(keyHandler);
         setFocusable(true);
@@ -126,10 +130,11 @@ public class GamePanel extends JPanel implements Runnable {
             if (bBounds.intersects(brBounds)) {
                 score += brick.getPointValue();
                 brick.hit();
+                sound1.play();
 
-                //  difficulty: speed up every 50 points
+                //  difficulty
                 if (score >= nextSpeedUp) {
-                    ball.speedUp(0.4);   // +0.4 per threshold (capped at MAX_SPEED inside Ball)
+                    ball.speedUp(0.4);
                     nextSpeedUp += 50;
                 }
 
@@ -155,6 +160,7 @@ public class GamePanel extends JPanel implements Runnable {
             lives--;
             if (lives <= 0) {
                 state = GameState.GAME_OVER;
+                sound2.play();
             } else {
                 resetBallAndPaddle();
             }
